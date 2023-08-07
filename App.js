@@ -5,16 +5,25 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./Screens/HomeScreen";
 import Login from "./Screens/Login";
 import SignUp from "./Screens/SignUp";
+import { Provider } from "react-redux";
+import Store from "./Contex/store";
+import SplashScreen from "./Screens/SplashScreen";
+import AddToChat from "./Screens/AddToChat";
 
 const App = () => {
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="SignUpScreen" component={SignUp} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="SignUpScreen" component={SignUp} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="AddToChat" component={AddToChat} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
