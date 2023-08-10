@@ -28,7 +28,7 @@ const SplashScreen = () => {
           .then(() => {
             setTimeout(() => {
               navigation.navigate("HomeScreen");
-            }, 2000);
+            }, 1000);
           });
       } else {
         navigation.navigate("Login");

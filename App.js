@@ -9,6 +9,8 @@ import { Provider } from "react-redux";
 import Store from "./Contex/store";
 import SplashScreen from "./Screens/SplashScreen";
 import AddToChat from "./Screens/AddToChat";
+import ChatScreen from "./Screens/ChatScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -21,6 +23,8 @@ const App = () => {
           <Stack.Screen name="SignUpScreen" component={SignUp} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="AddToChat" component={AddToChat} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

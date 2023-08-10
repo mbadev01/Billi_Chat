@@ -6,16 +6,39 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import {
+  QuerySnapshot,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "@firebase/firestore";
+import { FIRESTORE_DB } from "../config";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [chats, setChats] = useState(null);
+  useLayoutEffect(() => {
+    const chatQuery = query(
+      collection(FIRESTORE_DB, "chats"),
+      orderBy("_id", "desc")
+    );
+    const unSubscribe = onSnapshot(chatQuery, (QuerySnapshot) => {
+      const chatRooms = QuerySnapshot.docs.map((doc) => doc.data());
+      setChats(chatRooms);
+      setLoading(false);
+    });
+    return unSubscribe;
+  }, []);
+
   return (
     <View
       style={{
@@ -40,7 +63,9 @@ const HomeScreen = () => {
             source={require("../assets/images/logo.png")}
             style={{ height: 50, width: 50 }}
           />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ProfileScreen")}
+          >
             <Ionicons name="person" size={32} color="#2a9d8f" />
           </TouchableOpacity>
         </View>
@@ -99,19 +124,15 @@ const HomeScreen = () => {
               </>
             ) : (
               <>
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
-                <MessageCard />
+                {chats && chats?.length > 0 ? (
+                  <>
+                    {chats?.map((room) => (
+                      <MessageCard key={room._id} room={room} />
+                    ))}
+                  </>
+                ) : (
+                  <></>
+                )}
               </>
             )}
           </View>
@@ -121,9 +142,11 @@ const HomeScreen = () => {
   );
 };
 
-const MessageCard = () => {
+const MessageCard = ({ room }) => {
+  const navigation = useNavigation();
   return (
     <TouchableOpacity
+      onPress={() => navigation.navigate("ChatScreen", { room: room })}
       style={{
         width: "100%",
         flexDirection: "row",
@@ -162,7 +185,7 @@ const MessageCard = () => {
             fontSize: 15,
           }}
         >
-          Message Title
+          {room.chatName}
         </Text>
         <Text
           style={{
